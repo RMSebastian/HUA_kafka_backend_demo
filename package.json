@@ -6,7 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build-all": "concurrently -c \"cyan.bold,red.bold\" \"npm run build-pro\" \"npm run build-con\"",
+    "build-pro": "nest build producer-app",
+    "build-con": "nest build consumer-app",
+    "build": "nest build producer-app",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "dev-all": "concurrently -c \"cyan.bold,red.bold\" \"npm run dev-pro\" \"npm run dev-con\"",
