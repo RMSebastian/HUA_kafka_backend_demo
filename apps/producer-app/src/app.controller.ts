@@ -1,12 +1,46 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { AppService } from './app.service';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from 'global/dto/product.dto copy';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('allProducts')
+  getAllProducts(): Product[] {
+    return this.appService.getAllProducts();
+  }
+  @Get('getProduct/:id')
+  getProduct(@Param('id', ParseIntPipe) id: number): Product {
+    return this.appService.getProduct(id);
+  }
+  @Put('updateProduct/:id')
+  updateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProduct: UpdateProductDto,
+  ): Product {
+    return this.appService.updateProduct(id, updateProduct);
+  }
+
+  @Post('createProduct')
+  postProduct(@Body() createProductDto: CreateProductDto): Product {
+    return this.appService.createProduct(createProductDto);
+  }
+
+  @Delete('deleteProduct/:id')
+  deleteProduct(@Param('id', ParseIntPipe) id: number): Product {
+    return this.appService.deleteProduct(id);
   }
 }

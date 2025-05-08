@@ -9,7 +9,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { ConsumerAppService } from './consumer-app.service';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from 'global/dto/product.dto copy';
 
 @Controller()
 export class ConsumerAppController {
