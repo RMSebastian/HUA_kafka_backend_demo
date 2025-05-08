@@ -9,12 +9,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { ConsumerAppService } from './consumer-app.service';
-import {
-  CreateProductDto,
-  UpdateProductDto,
-} from 'global/dto/product.dto copy';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { Product } from 'global/class/product.class';
+import { Product } from './class/product.class';
+import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 
 @Controller()
 export class ConsumerAppController {

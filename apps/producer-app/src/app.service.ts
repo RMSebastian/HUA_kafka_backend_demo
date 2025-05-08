@@ -1,10 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { Product } from 'global/class/product.class';
-import {
-  CreateProductDto,
-  UpdateProductDto,
-} from 'global/dto/product.dto copy';
+import { Product } from './class/product.class';
+import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+
 @Injectable()
 export class AppService {
   private readonly products: Product[] = [];
@@ -63,7 +61,6 @@ export class AppService {
     const newId = this.products.length + 1;
     const newProduct: Product = { ...newProd, id: newId };
     this.products.push(newProduct);
-    console.log('New product created:', newProduct);
     this.kafkaService.emit('product_created', newProduct);
     return newProduct;
   }

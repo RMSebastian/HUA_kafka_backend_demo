@@ -9,12 +9,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import {
-  CreateProductDto,
-  UpdateProductDto,
-} from 'global/dto/product.dto copy';
-import { Product } from 'global/class/product.class';
-
+import { Product } from './class/product.class';
+import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
