@@ -1,0 +1,32 @@
+# Etapa de build
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+# Copiar solo lo necesario para instalar dependencias
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+COPY apps ./apps
+
+# Instalamos dependencias
+RUN npm install
+
+# Ejecutamos el build para ambos servicios
+RUN npm run build-all
+
+# Etapa de producción
+FROM node:18-alpine as production
+
+WORKDIR /app
+
+# Copiar los node_modules y dist desde la etapa de construcción
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+
+# Exponer puertos (no se usa aún, se configura en docker-compose)
+EXPOSE 3001 3002
+
+# El comando predeterminado será reemplazado por el servicio adecuado en docker-compose
+CMD ["node", "dist/apps/consumer-app/main.js"]

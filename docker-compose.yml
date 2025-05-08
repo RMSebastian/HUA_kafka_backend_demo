@@ -4,7 +4,7 @@ services:
   producer:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.producer
     container_name: producer-service
     command: node dist/apps/producer-app/main.js
     ports:
@@ -15,7 +15,7 @@ services:
   consumer:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.consumer
     container_name: consumer-service
     command: node dist/apps/consumer-app/main.js
     ports:
