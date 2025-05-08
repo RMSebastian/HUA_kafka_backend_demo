@@ -1,5 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductDto, UpdateProductDto } from 'global/dto/product.dto copy';
+import { Product } from 'global/class/product.class';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from 'global/dto/product.dto copy';
 @Injectable()
 export class ConsumerAppService {
   private readonly products: Product[] = [];

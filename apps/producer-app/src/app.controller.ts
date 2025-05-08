@@ -13,6 +13,7 @@ import {
   CreateProductDto,
   UpdateProductDto,
 } from 'global/dto/product.dto copy';
+import { Product } from 'global/class/product.class';
 
 @Controller()
 export class AppController {

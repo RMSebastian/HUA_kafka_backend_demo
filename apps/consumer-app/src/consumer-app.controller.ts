@@ -13,6 +13,8 @@ import {
   CreateProductDto,
   UpdateProductDto,
 } from 'global/dto/product.dto copy';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { Product } from 'global/class/product.class';
 
 @Controller()
 export class ConsumerAppController {
@@ -43,5 +45,10 @@ export class ConsumerAppController {
   @Delete('deleteProduct/:id')
   deleteProduct(@Param('id', ParseIntPipe) id: number): Product {
     return this.consumerAppService.deleteProduct(id);
+  }
+
+  @EventPattern('product_created')
+  handleProductCreated(@Payload() data: CreateProductDto) {
+    this.consumerAppService.createProduct(data);
   }
 }
