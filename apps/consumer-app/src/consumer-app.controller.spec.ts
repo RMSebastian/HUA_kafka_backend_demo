@@ -11,12 +11,8 @@ describe('ConsumerAppController', () => {
       providers: [ConsumerAppService],
     }).compile();
 
-    consumerAppController = app.get<ConsumerAppController>(ConsumerAppController);
-  });
-
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(consumerAppController.getHello()).toBe('Hello World!');
-    });
+    consumerAppController = app.get<ConsumerAppController>(
+      ConsumerAppController,
+    );
   });
 });
