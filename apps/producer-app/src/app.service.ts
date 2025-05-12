@@ -8,28 +8,7 @@ export class AppService {
   private readonly products: Product[] = [];
   constructor(
     @Inject('KAFKA_SERVICE') private readonly kafkaService: ClientKafka,
-  ) {
-    this.products = [
-      {
-        id: 1,
-        name: 'Product 1',
-        description: 'Description of Product 1',
-        price: 100,
-      },
-      {
-        id: 2,
-        name: 'Product 2',
-        description: 'Description of Product 2',
-        price: 200,
-      },
-      {
-        id: 3,
-        name: 'Product 3',
-        description: 'Description of Product 3',
-        price: 300,
-      },
-    ];
-  }
+  ) {}
 
   getProduct(id: number): Product {
     const product: Product | undefined = this.products.find(
@@ -57,11 +36,22 @@ export class AppService {
     }
     return updatedProduct;
   }
-  createProduct(newProd: CreateProductDto): Product {
+  async createProduct(newProd: CreateProductDto): Promise<Product> {
     const newId = this.products.length + 1;
     const newProduct: Product = { ...newProd, id: newId };
     this.products.push(newProduct);
-    this.kafkaService.emit('product_created', newProduct);
+    const headers = {
+      transactionId: new Date().getTime().toString(),
+      timestamp: new Date().toISOString(),
+      retryCount: '2',
+    };
+    const messageKey = `${newId}`;
+    await this.kafkaService.emit('product_created', {
+      value: newProd,
+      headers: headers,
+      key: messageKey,
+      partition: '0',
+    });
     return newProduct;
   }
   deleteProduct(id: number): Product {

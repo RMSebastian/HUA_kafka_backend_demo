@@ -18,6 +18,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           consumer: {
             groupId: process.env.KAFKA_GROUP_ID ?? 'default-group',
           },
+          producerOnlyMode: true,
         },
       },
     ]),
