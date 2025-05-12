@@ -28,12 +28,12 @@ async function bootstrap() {
         groupId: process.env.KAFKA_GROUP_ID ?? 'default-group',
       },
       run: {
-        autoCommit: true,
+        autoCommit: false,
       },
     },
   });
 
   await app.startAllMicroservices();
-  await app.listen(3000);
+  await app.listen(process.env.NODE_ENV === 'local' ? 3001 : 3000);
 }
 bootstrap();
