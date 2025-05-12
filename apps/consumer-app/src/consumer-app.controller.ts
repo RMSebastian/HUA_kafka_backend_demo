@@ -50,24 +50,4 @@ export class ConsumerAppController {
   deleteProduct(@Param('id', ParseIntPipe) id: number): Product {
     return this.consumerAppService.deleteProduct(id);
   }
-
-  @EventPattern('product_created')
-  async handleProductCreated(
-    @Payload() data: CreateProductDto,
-    @Ctx() context: KafkaContext,
-  ) {
-    try {
-      await this.consumerAppService.createProduct(data);
-
-      const originalMessage = context.getMessage();
-      const consumerRef = context.getConsumer();
-      const topic = context.getTopic();
-      const partition = context.getPartition();
-      const offset = (Number(originalMessage.offset) + 1).toString();
-
-      await consumerRef.commitOffsets([{ topic, partition, offset }]);
-    } catch (error) {
-      // aquí puedes hacer un retry o manejar error
-    }
-  }
 }
