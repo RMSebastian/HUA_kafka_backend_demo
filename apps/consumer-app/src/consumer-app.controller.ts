@@ -7,12 +7,19 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { ConsumerAppService } from './consumer-app.service';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  KafkaContext,
+  Payload,
+} from '@nestjs/microservices';
 import { Product } from './class/product.class';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-
+import { KafkaMaxRetryExceptionFilter } from './filters/kafka.retryException';
+@UseFilters(new KafkaMaxRetryExceptionFilter(5))
 @Controller()
 export class ConsumerAppController {
   constructor(private readonly consumerAppService: ConsumerAppService) {}
@@ -45,7 +52,22 @@ export class ConsumerAppController {
   }
 
   @EventPattern('product_created')
-  handleProductCreated(@Payload() data: CreateProductDto) {
-    this.consumerAppService.createProduct(data);
+  async handleProductCreated(
+    @Payload() data: CreateProductDto,
+    @Ctx() context: KafkaContext,
+  ) {
+    try {
+      await this.consumerAppService.createProduct(data);
+
+      const originalMessage = context.getMessage();
+      const consumerRef = context.getConsumer();
+      const topic = context.getTopic();
+      const partition = context.getPartition();
+      const offset = (Number(originalMessage.offset) + 1).toString();
+
+      await consumerRef.commitOffsets([{ topic, partition, offset }]);
+    } catch (error) {
+      // aquí puedes hacer un retry o manejar error
+    }
   }
 }

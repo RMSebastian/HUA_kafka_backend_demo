@@ -27,6 +27,9 @@ async function bootstrap() {
       consumer: {
         groupId: process.env.KAFKA_GROUP_ID ?? 'default-group',
       },
+      run: {
+        autoCommit: true,
+      },
     },
   });
 
