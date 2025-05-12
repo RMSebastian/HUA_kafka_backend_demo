@@ -6,11 +6,12 @@ import {
 } from '@nestjs/microservices';
 import { CreateProductDto } from './dto/product.dto';
 import { ConsumerAppService } from './consumer-app.service';
-import { UseFilters } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { KafkaMaxRetryExceptionFilter } from './filters/kafka.retryException';
 import { commitOffset } from './utils/kafka.commitOffset';
 
 @UseFilters(new KafkaMaxRetryExceptionFilter(5))
+@Controller()
 export class ConsumerAppEventHandler {
   constructor(private readonly consumerAppService: ConsumerAppService) {}
   @EventPattern('product_created')
