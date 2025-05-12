@@ -18,8 +18,12 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           },
           consumer: {
             groupId: process.env.KAFKA_GROUP_ID ?? 'default-group',
+            retry: {
+              retries: 5,
+              initialRetryTime: 300,
+              maxRetryTime: 10000,
+            },
           },
-          
         },
       },
     ]),

@@ -37,18 +37,15 @@ export class AppService {
     return updatedProduct;
   }
   async createProduct(newProd: CreateProductDto): Promise<Product> {
-    const newId = this.products.length + 1;
+    const newId = new Date().getTime();
     const newProduct: Product = { ...newProd, id: newId };
     this.products.push(newProduct);
-    const headers = {
-      transactionId: new Date().getTime().toString(),
-      timestamp: new Date().toISOString(),
-      retryCount: '2',
-    };
     const messageKey = `${newId}`;
     await this.kafkaService.emit('product_created', {
-      value: newProd,
-      headers: headers,
+      value: newProduct,
+      headers: {
+        timestamp: new Date().toISOString(),
+      },
       key: messageKey,
       partition: '0',
     });
