@@ -9,4 +9,8 @@ export class ConsumerAppController {
   getAllProducts(): Product[] {
     return this.consumerAppService.getAllProducts();
   }
+  @Get('Dlq')
+  getDlq(): any {
+    return this.consumerAppService.getDql();
+  }
 }

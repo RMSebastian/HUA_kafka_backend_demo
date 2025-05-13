@@ -57,4 +57,10 @@ export class ConsumerAppEventHandler {
   ) {
     await this.processProductCreated(data, context);
   }
+
+  @EventPattern('product_created_dlq')
+  async handleProductDlq(@Payload() data: any, @Ctx() context: KafkaContext) {
+    await this.consumerAppService.saveDql(data);
+    await commitOffset(context);
+  }
 }

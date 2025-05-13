@@ -23,6 +23,7 @@ export const handleKafkaRetries = async (
         value: {
           ...(context.getArgByIndex(0).value || {}),
           error: {
+            topic: topic,
             action: actionMessage,
             message: errorMessage,
           },
@@ -40,6 +41,7 @@ export const handleKafkaRetries = async (
         value: {
           ...(context.getArgByIndex(0).value || {}),
           error: {
+            topic: topic,
             action: actionMessage,
             message: errorMessage,
           },
