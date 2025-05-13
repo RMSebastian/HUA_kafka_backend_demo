@@ -34,6 +34,6 @@ async function bootstrap() {
   });
 
   await app.startAllMicroservices();
-  await app.listen(process.env.NODE_ENV === 'local' ? 3001 : 3000);
+  app.listen(Number(process.env.CONSUMER_PORT) || 3002);
 }
 bootstrap();

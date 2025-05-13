@@ -24,22 +24,22 @@ export class ConsumerAppEventHandler {
         (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'local') &&
         data.name === 'fail'
       ) {
-        throw new Error('Simulated error for testing');
-      }
-      await this.consumerAppService.createProduct(data);
-      await commitOffset(context);
-    } catch (error) {
-      try {
         await handleKafkaRetries(
           this.kafkaService,
           context,
           'product_created',
-          error ?? 'product_created error',
+          'Simulated error for testing',
         );
-        console.error('Error handling product_created event:', error);
-      } catch (retryError) {
-        console.error('Retry handler failed:', retryError);
       }
+      if (this.consumerAppService.getProduct(data.id)) {
+        await commitOffset(context);
+        return;
+      }
+
+      await this.consumerAppService.createProduct(data);
+      await commitOffset(context);
+    } catch (error) {
+      console.error('Error handling product_created event:', error);
     }
   }
   @EventPattern('product_created')

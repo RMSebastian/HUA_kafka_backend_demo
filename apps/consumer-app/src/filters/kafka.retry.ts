@@ -46,8 +46,9 @@ export const handleKafkaRetries = async (
         },
         partition: '0',
       });
+      await commitOffset(context);
     }
-    throw new Error(errorMessage + actionMessage);
+    throw new Error(`${errorMessage} ${actionMessage}`);
   } catch (error) {
     throw error;
   }
