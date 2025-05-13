@@ -4,14 +4,15 @@ import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 @Injectable()
 export class ConsumerAppService {
   private readonly products: Product[] = [];
+  private dlq: any;
   constructor() {}
 
-  getProduct(id: number): Product {
+  getProduct(id: number): Product | null {
     const product: Product | undefined = this.products.find(
       (product) => product.id === id,
     );
     if (!product) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      return null;
     }
     return product;
   }
@@ -32,11 +33,9 @@ export class ConsumerAppService {
     }
     return updatedProduct;
   }
-  createProduct(newProd: CreateProductDto): Product {
-    const newId = this.products.length + 1;
-    const newProduct: Product = { ...newProd, id: newId };
-    this.products.push(newProduct);
-    return newProduct;
+  createProduct(newProd: Product): Product {
+    this.products.push(newProd);
+    return newProd;
   }
   deleteProduct(id: number): Product {
     const deletedProduct: Product | undefined = this.products.find(
@@ -48,5 +47,12 @@ export class ConsumerAppService {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
     return deletedProduct;
+  }
+  getDql(): any {
+    return this.dlq ?? null;
+  }
+
+  saveDql(data: any): any {
+    this.dlq = data;
   }
 }

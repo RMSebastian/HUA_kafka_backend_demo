@@ -1,10 +1,8 @@
 import { Catch, ArgumentsHost, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { KafkaContext } from '@nestjs/microservices/ctx-host';
 
-//Filter to handle Kafka messages that exceed the maximum retry count recommended by the Kafka-NestJS library.
-//This filter will commit the offset of the message to prevent reprocessing.
-//SkipHandler is an optional function that can be executed when the maximum retry count is exceeded (DTQ as an example).
 @Catch()
 export class KafkaMaxRetryExceptionFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(KafkaMaxRetryExceptionFilter.name);
@@ -21,7 +19,6 @@ export class KafkaMaxRetryExceptionFilter extends BaseExceptionFilter {
     const kafkaContext = host.switchToRpc().getContext<KafkaContext>();
     const message = kafkaContext.getMessage();
     const currentRetryCount = this.getRetryCountFromContext(kafkaContext);
-
     if (currentRetryCount >= this.maxRetries) {
       this.logger.warn(
         `Max retries (${
