@@ -47,7 +47,6 @@ export class AppService {
         timestamp: new Date().toISOString(),
       },
       key: messageKey,
-      partition: '0',
     });
     return newProduct;
   }

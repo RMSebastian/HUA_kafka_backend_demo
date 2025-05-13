@@ -4,7 +4,7 @@ import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 @Injectable()
 export class ConsumerAppService {
   private readonly products: Product[] = [];
-  private dlq: any;
+  private readonly dlq: any[] = [];
   constructor() {}
 
   getProduct(id: number): Product | null {
@@ -48,11 +48,12 @@ export class ConsumerAppService {
     }
     return deletedProduct;
   }
-  getDql(): any {
+  getDql(): any[] {
     return this.dlq ?? null;
   }
 
   saveDql(data: any): any {
-    this.dlq = data;
+    this.dlq.push(data);
+    return data;
   }
 }
