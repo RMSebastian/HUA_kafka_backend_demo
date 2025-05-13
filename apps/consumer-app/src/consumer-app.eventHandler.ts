@@ -31,7 +31,8 @@ export class ConsumerAppEventHandler {
           'Simulated error for testing',
         );
       }
-      if (this.consumerAppService.getProduct(data.id)) {
+      const product = this.consumerAppService.getProduct(data.id);
+      if (product) {
         await commitOffset(context);
         return;
       }

@@ -6,12 +6,12 @@ export class ConsumerAppService {
   private readonly products: Product[] = [];
   constructor() {}
 
-  getProduct(id: number): Product {
+  getProduct(id: number): Product | null {
     const product: Product | undefined = this.products.find(
       (product) => product.id === id,
     );
     if (!product) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      return null;
     }
     return product;
   }
