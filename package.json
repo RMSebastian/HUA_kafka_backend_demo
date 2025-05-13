@@ -31,11 +31,14 @@
     "@nestjs/microservices": "^11.1.0",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
+    "axios": "^1.9.0",
     "class-validator": "^0.14.2",
     "concurrently": "^9.1.2",
     "kafkajs": "^2.2.4",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "webpack": "^5.99.8",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

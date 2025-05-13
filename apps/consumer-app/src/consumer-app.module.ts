@@ -3,10 +3,12 @@ import { ConsumerAppController } from './consumer-app.controller';
 import { ConsumerAppService } from './consumer-app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ConsumerAppEventHandler } from './consumer-app.eventHandler';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { LoggerModule } from './logs/log.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    LoggerModule,
     ClientsModule.register([
       {
         name: 'KAFKA_SERVICE',

@@ -2,9 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { ConsumerAppModule } from './consumer-app.module';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { CustomLoggerService } from './logs/log.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ConsumerAppModule);
+  const app = await NestFactory.create(ConsumerAppModule, {
+    bufferLogs: true,
+    // timestamp: true,
+  });
+
+  app.useLogger(app.get(CustomLoggerService));
 
   const config = new DocumentBuilder()
     .setTitle('Consumer API')
