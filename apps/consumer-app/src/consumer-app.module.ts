@@ -4,6 +4,7 @@ import { ConsumerAppService } from './consumer-app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ConsumerAppEventHandler } from './consumer-app.eventHandler';
 import { LoggerModule } from './logs/log.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
