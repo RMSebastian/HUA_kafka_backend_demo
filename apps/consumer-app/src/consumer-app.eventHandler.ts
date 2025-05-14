@@ -11,11 +11,14 @@ import { commitOffset } from './utils/kafka.commitOffset';
 import { KafkaMaxRetryExceptionFilter } from './filters/kafka.retryException';
 import { handleKafkaRetries } from './filters/kafka.retry';
 import { Product } from './class/product.class';
+import { CustomLoggerService } from './logs/log.service';
+
 @Controller()
 export class ConsumerAppEventHandler {
   constructor(
     private readonly consumerAppService: ConsumerAppService,
     @Inject('KAFKA_SERVICE') private readonly kafkaService: ClientKafka,
+    private customLog: CustomLoggerService,
   ) {}
 
   private async processProductCreated(data: Product, context: KafkaContext) {
@@ -40,6 +43,7 @@ export class ConsumerAppEventHandler {
       await this.consumerAppService.createProduct(data);
       await commitOffset(context);
     } catch (error) {
+      this.customLog.error(`Error handling product_created event:${error}`);
       console.error('Error handling product_created event:', error);
     }
   }
