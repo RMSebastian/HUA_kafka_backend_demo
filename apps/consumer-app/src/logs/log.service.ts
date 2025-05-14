@@ -19,8 +19,8 @@ export class CustomLoggerService extends ConsoleLogger {
       serviceVersion: '1.0',
       environment: 'Development',
       host: 'localhost.com',
-      application: 'cacona',
-      timestamp: '2024-02-20T12:00:00.000Z',
+      application: 'POC',
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -32,8 +32,8 @@ export class CustomLoggerService extends ConsoleLogger {
       serviceVersion: '1.0',
       environment: 'Development',
       host: 'localhost.com',
-      application: 'cacona',
-      timestamp: '2024-02-20T12:00:00.000Z',
+      application: 'POC',
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -45,8 +45,8 @@ export class CustomLoggerService extends ConsoleLogger {
       serviceVersion: '1.0',
       environment: 'Development',
       host: 'localhost.com',
-      application: 'cacona',
-      timestamp: '2024-02-20T12:00:00.000Z',
+      application: 'POC',
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -58,8 +58,8 @@ export class CustomLoggerService extends ConsoleLogger {
       serviceVersion: '1.0',
       environment: 'Development',
       host: 'localhost.com',
-      application: 'cacona',
-      timestamp: '2024-02-20T12:00:00.000Z',
+      application: 'POC',
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -71,8 +71,8 @@ export class CustomLoggerService extends ConsoleLogger {
       serviceVersion: '1.0',
       environment: 'Development',
       host: 'localhost.com',
-      application: 'cacona',
-      timestamp: '2024-02-20T12:00:00.000Z',
+      application: 'POC',
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -84,8 +84,8 @@ export class CustomLoggerService extends ConsoleLogger {
       serviceVersion: '1.0',
       environment: 'Development',
       host: 'localhost.com',
-      application: 'cacona',
-      timestamp: '2024-02-20T12:00:00.000Z',
+      application: 'POC',
+      timestamp: new Date().toISOString(),
     });
   }
 }
