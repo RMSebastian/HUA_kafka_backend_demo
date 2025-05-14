@@ -24,12 +24,7 @@ export class ConsumerAppEventHandler {
         (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'local') &&
         data.name === 'fail'
       ) {
-        await handleKafkaRetries(
-          this.kafkaService,
-          context,
-          'product_created',
-          'Simulated error for testing',
-        );
+        throw new TypeError('Algo salio mal con kafka');
       }
       const product = this.consumerAppService.getProduct(data.id);
       if (product) {
@@ -37,10 +32,21 @@ export class ConsumerAppEventHandler {
         return;
       }
 
-      await this.consumerAppService.createProduct(data);
       await commitOffset(context);
+      await this.consumerAppService.createProduct(data);
     } catch (error) {
-      console.error('Error handling product_created event:', error);
+      switch (error.name) {
+        case 'TypeError':
+          await handleKafkaRetries(
+            this.kafkaService,
+            context,
+            'product_created',
+            'Simulated error for testing',
+          );
+          break;
+        default:
+          console.error('Error handling product_created event:', error);
+      }
     }
   }
   @EventPattern('product_created')

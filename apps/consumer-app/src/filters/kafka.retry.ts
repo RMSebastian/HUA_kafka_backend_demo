@@ -1,7 +1,7 @@
 import { ClientKafka, KafkaContext } from '@nestjs/microservices';
 import { commitOffset } from '../utils/kafka.commitOffset';
 
-const emitAndWait = (kafka: ClientKafka, topic: string, payload: any) => {
+const emitEvent = (kafka: ClientKafka, topic: string, payload: any) => {
   return new Promise<void>((resolve, reject) => {
     kafka.emit(topic, payload).subscribe({
       next: () => resolve(),
@@ -40,7 +40,6 @@ export const handleKafkaRetries = async (
     headers: newHeaders,
     key: new Date().getTime().toString(),
     value,
-    partition: '0',
   };
 
   try {
@@ -49,14 +48,8 @@ export const handleKafkaRetries = async (
         ? `${topic}_dlq`
         : `${topic}_retry`;
 
-    await emitAndWait(kafka, retryTopic, payload);
-
-    console.log(context);
+    await emitEvent(kafka, retryTopic, payload);
     await commitOffset(context);
-
-    throw new Error(
-      `${errorMessage} | Sent to ${retryTopic} | Attempt #${retryCount + 1}`,
-    );
   } catch (error) {
     throw error;
   }
