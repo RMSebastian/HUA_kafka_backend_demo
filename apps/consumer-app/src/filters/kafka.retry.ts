@@ -1,6 +1,15 @@
 import { ClientKafka, KafkaContext } from '@nestjs/microservices';
 import { commitOffset } from '../utils/kafka.commitOffset';
 
+const emitAndWait = (kafka: ClientKafka, topic: string, payload: any) => {
+  return new Promise<void>((resolve, reject) => {
+    kafka.emit(topic, payload).subscribe({
+      next: () => resolve(),
+      error: (err) => reject(err),
+    });
+  });
+};
+
 export const handleKafkaRetries = async (
   kafka: ClientKafka,
   context: KafkaContext,
@@ -9,48 +18,45 @@ export const handleKafkaRetries = async (
 ) => {
   const headers = context.getMessage().headers || {};
   const retryCount = parseInt(headers['retryCount']?.toString() || '0', 10);
+
+  const newHeaders = {
+    timestamp: new Date().toISOString(),
+    retryCount: Buffer.from((retryCount + 1).toString()),
+  };
+
+  const value = {
+    ...(context.getArgByIndex(0).value || {}),
+    error: {
+      topic: topic,
+      message: errorMessage,
+      action:
+        retryCount >= Number(process.env.MAX_RETRY)
+          ? 'Max amount of attempts were made in this request'
+          : `Retrying... Attempt Nº${retryCount + 1} for topic ${topic} due to: ${errorMessage}`,
+    },
+  };
+
+  const payload = {
+    headers: newHeaders,
+    key: new Date().getTime().toString(),
+    value,
+    partition: '0',
+  };
+
   try {
-    let actionMessage;
-    if (retryCount >= Number(process.env.MAX_RETRY)) {
-      actionMessage = 'Max amount of attempts were made in this request';
-      await commitOffset(context);
-      kafka.emit(`${topic}_dlq`, {
-        headers: {
-          timestamp: new Date().toISOString(),
-          retryCount: Buffer.from((retryCount + 1).toString()),
-        },
-        key: new Date().getTime().toString(),
-        value: {
-          ...(context.getArgByIndex(0).value || {}),
-          error: {
-            topic: topic,
-            action: actionMessage,
-            message: errorMessage,
-          },
-        },
-        partition: '0',
-      });
-    } else {
-      actionMessage = `Retrying... Attempt Nº${retryCount + 1} for topic ${topic} due to: ${errorMessage}`;
-      kafka.emit(`${topic}_retry`, {
-        headers: {
-          timestamp: new Date().toISOString(),
-          retryCount: Buffer.from((retryCount + 1).toString()),
-        },
-        key: new Date().getTime().toString(),
-        value: {
-          ...(context.getArgByIndex(0).value || {}),
-          error: {
-            topic: topic,
-            action: actionMessage,
-            message: errorMessage,
-          },
-        },
-        partition: '0',
-      });
-      await commitOffset(context);
-    }
-    throw new Error(`${errorMessage} ${actionMessage}`);
+    const retryTopic =
+      retryCount >= Number(process.env.MAX_RETRY)
+        ? `${topic}_dlq`
+        : `${topic}_retry`;
+
+    await emitAndWait(kafka, retryTopic, payload);
+
+    console.log(context);
+    await commitOffset(context);
+
+    throw new Error(
+      `${errorMessage} | Sent to ${retryTopic} | Attempt #${retryCount + 1}`,
+    );
   } catch (error) {
     throw error;
   }

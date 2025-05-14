@@ -6,7 +6,10 @@ export const commitOffset = async (context: KafkaContext) => {
     const partition = context.getPartition();
     const topic = context.getTopic();
     const consumer = context.getConsumer();
-    await consumer.commitOffsets([{ topic, partition, offset }]);
+
+    const nextOffset = (BigInt(offset) + 1n).toString();
+
+    await consumer.commitOffsets([{ topic, partition, offset: nextOffset }]);
   } catch (error) {
     console.error('Error commitOffset: ', error);
   }
