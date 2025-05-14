@@ -10,7 +10,9 @@ async function bootstrap() {
     // timestamp: true,
   });
 
-  app.useLogger(app.get(CustomLoggerService));
+  if (process.env.LOGGER_URL) {
+    app.useLogger(app.get(CustomLoggerService));
+  }
 
   const config = new DocumentBuilder()
     .setTitle('Consumer API')
@@ -40,6 +42,6 @@ async function bootstrap() {
   });
 
   await app.startAllMicroservices();
-  app.listen(Number(process.env.CONSUMER_PORT) || 3002);
+  app.listen(Number(process.env.PORT) || 3002);
 }
 bootstrap();

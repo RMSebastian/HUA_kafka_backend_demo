@@ -6,7 +6,7 @@ export class LoggingSenderService {
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: process.env.BASE_URL,
+      baseURL: process.env.LOGGER_URL,
       headers: {
         'Content-Type': 'application/json',
       },
