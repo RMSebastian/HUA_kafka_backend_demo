@@ -2,7 +2,6 @@ import { Injectable, ConsoleLogger, Scope } from '@nestjs/common';
 import { LoggingSenderService } from '../utils/sendlogs';
 
 @Injectable({ scope: Scope.TRANSIENT })
-// @Injectable()
 export class CustomLoggerService extends ConsoleLogger {
   private readonly sender: LoggingSenderService;
 

@@ -3,9 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { LoggerModule } from 'apps/consumer-app/src/logs/log.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    LoggerModule,
     ClientsModule.register([
       {
         name: 'KAFKA_SERVICE',

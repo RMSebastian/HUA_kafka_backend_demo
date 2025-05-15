@@ -5,13 +5,12 @@ import { ConfigModule } from '@nestjs/config';
 import { ConsumerAppEventHandler } from './consumer-app.eventHandler';
 import { LoggerModule } from './logs/log.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { CustomLoggerService } from './logs/log.service';
+// import { CustomLoggerService } from './logs/log.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     LoggerModule,
-    CustomLoggerService,
     ClientsModule.register([
       {
         name: 'KAFKA_SERVICE',
@@ -34,6 +33,6 @@ import { CustomLoggerService } from './logs/log.service';
     ]),
   ],
   controllers: [ConsumerAppController, ConsumerAppEventHandler],
-  providers: [ConsumerAppService, LoggerModule, CustomLoggerService],
+  providers: [ConsumerAppService, LoggerModule],
 })
 export class ConsumerAppModule {}
