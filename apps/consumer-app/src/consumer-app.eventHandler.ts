@@ -11,6 +11,7 @@ import { commitOffset } from './utils/kafka.commitOffset';
 import { KafkaMaxRetryExceptionFilter } from './filters/kafka.retryException';
 import { handleKafkaRetries } from './filters/kafka.retry';
 import { Product } from './class/product.class';
+import { KafkaTransaction } from '../decorators/kafka.newrelic';
 @Controller()
 export class ConsumerAppEventHandler {
   constructor(
@@ -49,6 +50,7 @@ export class ConsumerAppEventHandler {
       }
     }
   }
+  @KafkaTransaction('product_created')
   @EventPattern('product_created')
   async handleProductCreated(
     @Payload() data: Product,
@@ -56,6 +58,7 @@ export class ConsumerAppEventHandler {
   ) {
     await this.processProductCreated(data, context);
   }
+  @KafkaTransaction('product_created_retry')
   @EventPattern('product_created_retry')
   async handleProductCreatedRetry(
     @Payload() data: Product,
@@ -63,7 +66,7 @@ export class ConsumerAppEventHandler {
   ) {
     await this.processProductCreated(data, context);
   }
-
+  @KafkaTransaction('product_created_dlq')
   @EventPattern('product_created_dlq')
   async handleProductDlq(@Payload() data: any, @Ctx() context: KafkaContext) {
     await this.consumerAppService.saveDql(data);
