@@ -82,16 +82,16 @@ export class ConsumerAppEventHandler {
       }
     });
   }
-  
+
   // @KafkaTransaction('product_created')
   @EventPattern('product_created')
   async handleProductCreated(
     @Payload() data: Product,
     @Ctx() context: KafkaContext,
   ) {
-    // this.newRelicTransaction(context, async () => {
-    await this.processProductCreated(data, context);
-    // });
+    this.newRelicTransaction(context, async () => {
+      await this.processProductCreated(data, context);
+    });
   }
   // @KafkaTransaction('product_created_retry')
   @EventPattern('product_created_retry')
@@ -99,16 +99,16 @@ export class ConsumerAppEventHandler {
     @Payload() data: Product,
     @Ctx() context: KafkaContext,
   ) {
-    // this.newRelicTransaction(context, async () => {
-    await this.processProductCreated(data, context);
-    // });
+    this.newRelicTransaction(context, async () => {
+      await this.processProductCreated(data, context);
+    });
   }
   // @KafkaTransaction('product_created_dlq')
   @EventPattern('product_created_dlq')
   async handleProductDlq(@Payload() data: any, @Ctx() context: KafkaContext) {
-    // this.newRelicTransaction(context, async () => {
-    await this.consumerAppService.saveDql(data);
-    await commitOffset(context);
-    // });
+    this.newRelicTransaction(context, async () => {
+      await this.consumerAppService.saveDql(data);
+      await commitOffset(context);
+    });
   }
 }

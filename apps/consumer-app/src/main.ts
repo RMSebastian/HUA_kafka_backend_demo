@@ -15,7 +15,7 @@ async function bootstrap() {
     app.useLogger(app.get(CustomLoggerService));
   }
 
-  app.useGlobalInterceptors(new NewrelicInterceptor());
+  // app.useGlobalInterceptors(new NewrelicInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle('Consumer API')
