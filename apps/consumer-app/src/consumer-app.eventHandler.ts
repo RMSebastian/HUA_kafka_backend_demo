@@ -1,3 +1,4 @@
+import newrelic from '../wrapper/newrelic.wrapper';
 import {
   ClientKafka,
   Ctx,
@@ -12,7 +13,7 @@ import { KafkaMaxRetryExceptionFilter } from './filters/kafka.retryException';
 import { handleKafkaRetries } from './filters/kafka.retry';
 import { Product } from './class/product.class';
 import { KafkaTransaction } from '../decorators/kafka.decorators';
-import newrelic from 'newrelic';
+
 @Controller()
 export class ConsumerAppEventHandler {
   constructor(
@@ -60,7 +61,6 @@ export class ConsumerAppEventHandler {
     const partition = kafkaContext?.getPartition?.();
     const offset = kafkaContext?.getMessage()?.offset;
     const key = kafkaContext?.getMessage()?.key?.toString();
-
     return newrelic.startBackgroundTransaction(`Kafka/${topic}`, async () => {
       const tx = newrelic.getTransaction();
       console.log('❌❌❌❌❌❌ Started transaction for topic:', topic);
