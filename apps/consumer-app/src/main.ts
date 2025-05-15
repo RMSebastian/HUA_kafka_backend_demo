@@ -3,6 +3,7 @@ import { ConsumerAppModule } from './consumer-app.module';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { CustomLoggerService } from './logs/log.service';
+import 'newrelic'; 
 
 async function bootstrap() {
   const app = await NestFactory.create(ConsumerAppModule, {
