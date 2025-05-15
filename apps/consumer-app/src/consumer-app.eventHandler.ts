@@ -12,6 +12,7 @@ import { KafkaMaxRetryExceptionFilter } from './filters/kafka.retryException';
 import { handleKafkaRetries } from './filters/kafka.retry';
 import { Product } from './class/product.class';
 import { KafkaTransaction } from '../decorators/kafka.decorators';
+import newrelic from 'newrelic';
 @Controller()
 export class ConsumerAppEventHandler {
   constructor(
@@ -50,7 +51,34 @@ export class ConsumerAppEventHandler {
       }
     }
   }
-  @KafkaTransaction('product_created')
+
+//   private handle (kafkaContext: KafkaContext,callback: () => void){
+//     const topic = kafkaContext?.getTopic?.() || 'unknown-topic';
+//     const partition = kafkaContext?.getPartition?.();
+//     const offset = kafkaContext?.getMessage()?.offset;
+//     const key = kafkaContext?.getMessage()?.key?.toString();
+
+//     return newrelic.startBackgroundTransaction(`Kafka/${topic}`, async () => {
+//       const tx = newrelic.getTransaction();
+
+//       try {
+//         newrelic.addCustomAttributes({
+//           topic,
+//           partition,
+//           offset,
+//           key,
+//         });
+
+//         const result = await original.apply(this, args);
+//         tx.end();
+//         return result;
+//       } catch (err) {
+//         newrelic.noticeError(err);
+//         tx.end();
+//         throw err;
+//       }
+// } 
+  // @KafkaTransaction('product_created')
   @EventPattern('product_created')
   async handleProductCreated(
     @Payload() data: Product,
@@ -58,7 +86,7 @@ export class ConsumerAppEventHandler {
   ) {
     await this.processProductCreated(data, context);
   }
-  @KafkaTransaction('product_created_retry')
+  // @KafkaTransaction('product_created_retry')
   @EventPattern('product_created_retry')
   async handleProductCreatedRetry(
     @Payload() data: Product,
@@ -66,7 +94,7 @@ export class ConsumerAppEventHandler {
   ) {
     await this.processProductCreated(data, context);
   }
-  @KafkaTransaction('product_created_dlq')
+  // @KafkaTransaction('product_created_dlq')
   @EventPattern('product_created_dlq')
   async handleProductDlq(@Payload() data: any, @Ctx() context: KafkaContext) {
     await this.consumerAppService.saveDql(data);
