@@ -63,7 +63,7 @@ export class ConsumerAppEventHandler {
 
     return newrelic.startBackgroundTransaction(`Kafka/${topic}`, async () => {
       const tx = newrelic.getTransaction();
-
+      console.log('❌❌❌❌❌❌ Started transaction for topic:', topic);
       try {
         newrelic.addCustomAttributes({
           topic,
@@ -74,6 +74,7 @@ export class ConsumerAppEventHandler {
 
         const result = await callback();
         tx.end();
+        console.log('❌❌❌❌❌❌ END', topic);
         return result;
       } catch (err) {
         newrelic.noticeError(err);
