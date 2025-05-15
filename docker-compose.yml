@@ -18,6 +18,7 @@ services:
     env_file:
       - .env
     environment:
+      - NEW_RELIC_APP_NAME="kafka-producer"
       - PORT=3000
 
   consumer:
@@ -32,4 +33,5 @@ services:
     env_file:
       - .env
     environment:
+      - NEW_RELIC_APP_NAME="kafka-consumer"
       - PORT=3000
