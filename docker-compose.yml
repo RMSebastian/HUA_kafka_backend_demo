@@ -1,7 +1,13 @@
 version: '3.8'
-
+x-default-logging: &logging
+  driver: 'json-file'
+  options:
+    max-size: '5m'
+    max-file: '2'
+    tag: '{{.Name}}'
 services:
   producer:
+    logging: *logging
     build:
       context: .
       dockerfile: Dockerfile.producer
@@ -15,6 +21,7 @@ services:
       - PORT=3000
 
   consumer:
+    logging: *logging
     build:
       context: .
       dockerfile: Dockerfile.consumer
