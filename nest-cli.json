@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/consumer-app/tsconfig.app.json"
       }
     },
+    "consumer-app-azure": {
+      "type": "application",
+      "root": "apps/consumer-app-azure",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumer-app-azure/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumer-app-azure/tsconfig.app.json"
+      }
+    },
     "producer-app": {
       "type": "application",
       "root": "apps/producer-app",
@@ -26,6 +35,15 @@
       "sourceRoot": "apps/producer-app/src",
       "compilerOptions": {
         "tsConfigPath": "apps/producer-app/tsconfig.app.json"
+      }
+    },
+    "producer-app-azure": {
+      "type": "application",
+      "root": "apps/producer-app-azure",
+      "entryFile": "main",
+      "sourceRoot": "apps/producer-app-azure/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/producer-app-azure/tsconfig.app.json"
       }
     }
   }
