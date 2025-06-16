@@ -1,0 +1,26 @@
+services:
+  azure-producer:
+    build:
+      context: .
+      dockerfile: Dockerfile.azure.producer
+    container_name: azure-service
+    command: node dist/apps/producer-app-azure/main.js
+    ports:
+      - '3003:3000'
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+
+  azure-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile.azure.consumer
+    container_name: azure-consumer-service
+    command: node dist/apps/consumer-app-azure/main.js
+    ports:
+      - '3004:3000'
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
