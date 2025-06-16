@@ -10,7 +10,7 @@ COPY nest-cli.json ./
 COPY apps ./apps
 
 # Instalamos dependencias
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Ejecutamos el build para ambos servicios
 RUN npm run build-all
