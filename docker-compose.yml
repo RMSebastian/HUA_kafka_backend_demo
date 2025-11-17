@@ -1,0 +1,41 @@
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "2"
+    tag: "{{.Name}}"
+
+services:
+  producer:
+    logging: *logging
+    build:
+      context: .
+      dockerfile: Dockerfile.producer
+    container_name: producer-service
+    command: node -r tsconfig-paths/register dist/apps/producer-app/apps/producer-app/src/main.js
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env
+    environment:
+      - NEW_RELIC_APP_NAME=kafka-producer
+      - PORT=3000
+
+  consumer:
+    logging: *logging
+    build:
+      context: .
+      dockerfile: Dockerfile.consumer
+    container_name: consumer-service
+    command: node -r tsconfig-paths/register dist/apps/consumer-app/apps/consumer-app/src/main.js
+    ports:
+      - "3002:3000"
+    env_file:
+      - .env
+    environment:
+      - NEW_RELIC_APP_NAME=kafka-consumer
+      - PORT=3000
+
+networks:
+  kafka_default:
+    external: true

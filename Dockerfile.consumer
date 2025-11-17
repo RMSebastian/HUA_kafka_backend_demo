@@ -1,0 +1,28 @@
+# Etapa de build
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+COPY utils ./utils
+COPY apps ./apps
+
+RUN npm install
+RUN npm run build-all
+
+# Etapa de producción
+FROM node:18-alpine as production
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/tsconfig.json ./
+COPY package*.json ./
+
+EXPOSE 3000
+
+# Este CMD será sobrescrito por docker-compose
+CMD ["node", "dist/apps/consumer-app/main.js"]

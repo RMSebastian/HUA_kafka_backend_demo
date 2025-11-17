@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "outDir": "../../dist/apps/consumer-app"
+  },
+  "include": [
+    "src/**/*",
+    "decorators/**/*",
+    "wrapper/**/*",
+    "../../utils/**/*"
+  ],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}
