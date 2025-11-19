@@ -27,7 +27,9 @@ export class ConsummerAppEventHandlerInit {
 
   async onModuleInit() {
     this.loadTopicHandlers();
-    const consumer = this.kafkaService.consumer({ groupId: process.env.KAFKA_GROUP_ID ?? 'default-group' });
+    const consumer = this.kafkaService.consumer({
+      groupId: process.env.KAFKA_GROUP_ID ?? 'default-group',
+    });
     await consumer.connect();
 
     Object.keys(this.topicHandlers).forEach(async (topic) => {
@@ -114,6 +116,8 @@ export class ConsummerAppEventHandlerInit {
     try {
       const headers = payload.message.headers || {};
       const retryCount = parseInt(headers['retryCount']?.toString() || '0', 10);
+      const producer = this.kafkaService.producer();
+      await producer.connect();
 
       const newHeaders = {
         timestamp: new Date().toISOString(),
@@ -139,10 +143,10 @@ export class ConsummerAppEventHandlerInit {
 
       const destinationTopic =
         retryCount >= Number(process.env.MAX_RETRY)
-          ? `${topic}_dlq`
-          : `${topic}_retry`;
+          ? `${topic}-dlq`
+          : `${topic}-retry`;
 
-      await this.kafkaService.producer().send({
+      await producer.send({
         topic: destinationTopic,
         messages: [
           {
@@ -154,10 +158,11 @@ export class ConsummerAppEventHandlerInit {
       });
     } catch (err) {
       console.error('❌ Failed to enqueue retry message:', err);
-
+      const producer = this.kafkaService.producer();
+      await producer.connect();
       try {
-        await this.kafkaService.producer().send({
-          topic: `${payload.topic}_dlq`,
+        await producer.send({
+          topic: `${payload.topic}-dlq`,
           messages: [
             {
               key: Date.now().toString(),

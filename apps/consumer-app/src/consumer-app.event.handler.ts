@@ -11,7 +11,30 @@ export class ConsumerAppEventHandler {
 
   @KafkaTopic<Product>('test-topic', Product)
   @NewRelicTransaction<Product>()
-  async handleProductCreated(data: Product, ctx: EachMessagePayload) {
+  async HandleProductCreated(data: Product, ctx: EachMessagePayload) {
+    return this.handleProductCreated(data, ctx);
+  }
+  @KafkaTopic<Product>('test-topic-retry', Product)
+  @NewRelicTransaction<Product>()
+  async HandleProductCreatedRetry(data: Product, ctx: EachMessagePayload) {
+    return this.handleProductCreated(data, ctx);
+  }
+
+  @KafkaTopic('test-topic-dlq')
+  @NewRelicTransaction<Object>()
+  async HandleDLQCreated(data: Object, ctx: EachMessagePayload) {
+    try {
+      await this.consumerAppService.saveDql(data);
+
+      console.log(
+        `Product DLQ with id ${JSON.stringify(data)} created successfully.`,
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async handleProductCreated(data: Product, ctx: EachMessagePayload) {
     try {
       if (
         (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'local') &&
